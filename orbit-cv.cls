@@ -149,12 +149,14 @@
    \DTLnewdbentry{skills}{level}{\doSkill{#2}}%
 }
 
-\newcommand{\ListSkills}{
+\newcommand{\ListSkills}[1]{
   \par
   \renewcommand{\dtlheaderformat}[1]{}
   \renewcommand{\arraystretch}{1.3}
-  \DTLdisplaydb{skills}
-  \vspace{0.5cm}
+  \begin{tabular}{#1}
+  \DTLforeach{skills}{\skill=skill,\level=level}{%
+  \skill & \level\\}
+  \end{tabular}
 }
 %%%%%%%%%%%%%%%% 
 %Section Spacing
@@ -289,11 +291,14 @@
 %\let\textBlockOffset{16.5cm}
   
 \newcommand{\workexp}[4]{
-  { \textbf{#1}} \hfill \addfontfeatures{Color=textsubdued} #2 \par
-  {\color{textsubdued}{#3}}\par
+  \begin{minipage}{\textwidth}
+    {\textbf{#1}} \hfill \addfontfeatures{Color=textsubdued} #2\par
+    {\color{textsubdued}{#3}}\par
+    \vspace{1ex}
+  \end{minipage}
   \addfontfeatures{Color=darkgray}
-  #4\par 
-  \vspace{0.25cm} 
+  #4\par
+  \vspace{0.25cm}
 }
 
 \newcommand{\project}[3]{
@@ -362,7 +367,7 @@
 
       \ListLanguages{}
 
-      \ListInterests{}
+      \DTLifdbempty{interests}{}{\ListInterests{}}
 
     \end{flushleft}
 
