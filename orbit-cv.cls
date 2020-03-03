@@ -1,5 +1,5 @@
-\ProvidesClass{orbit-cv}[2017/07/10 résumé class]
-\LoadClass{memoir}
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesClass{orbit-cv}[2017/07/10 résumé class inspired by the Hugo Orbit theme]
 
 %% © Martín Varela, 2017
 %% Author: Martín Varela (martin@varela.fi)
@@ -10,11 +10,17 @@
 %% https://github.com/spagnuolocarmine/TwentySecondsCurriculumVitae-LaTex
 %% © Carmine Spagnuolo, 2016
 
-\NeedsTeXFormat{LaTeX2e}
 %%%%%%%%%%%
 % Packages
 %%%%%%%%%%%
 
+\DeclareOption{leftSidebar}{\leftSidebar{}}
+\DeclareOption{print}{\def\@cv@print{}}
+\DeclareOption*{
+  \PassOptionsToClass{\CurrentOption}{memoir}
+}
+\ProcessOptions\relax
+\LoadClass{memoir}
 \RequirePackage[T1]{fontenc}
 \RequirePackage{tikz}
 \RequirePackage{xcolor}
@@ -29,13 +35,7 @@
 \RequirePackage{fontspec}
 \RequirePackage{datatool}
 \RequirePackage{atbegshi}
-\DeclareOption{print}{\def\@cv@print{}}
-\DeclareOption*{
-  \PassOptionsToClass{\CurrentOption}{memoir}
-}
-\ProcessOptions\relax
 \RequirePackage[compact]{titlesec}
-
 
 %%%%%%%%%%%%%%
 % Profile data
@@ -46,7 +46,6 @@
 \DTLnewdb{cvlanguages}
 \DTLnewdb{interests}
 \DTLnewdb{skills}
-
 
 \newcommand{\addContact}[2]{
   \DTLnewrow{contact}%
@@ -60,6 +59,7 @@
   \footnotesize
   \renewcommand{\dtlheaderformat}[1]{}
   \renewcommand{\arraystretch}{1.6}
+  \hspace*{-1em}
   \DTLdisplaydb{contact}
   \vspace{0.5cm}
   \normalsize
@@ -84,7 +84,7 @@
   \raggedright
   \footnotesize
 
-\DTLforeach{education}{\degree=degree,\institute=institute,\dates=dates}{
+\DTLforeach*{education}{\degree=degree,\institute=institute,\dates=dates}{
   \dispEdu{\degree}{\institute}{\dates}
   }
 
@@ -108,7 +108,7 @@
   \vspace{0.3cm}
   \raggedright
   \footnotesize
-  \DTLforeach{cvlanguages}{\cvlanguage=cvlanguage,\level=level}{
+  \DTLforeach*{cvlanguages}{\cvlanguage=cvlanguage,\level=level}{
     \dispLang{\cvlanguage}{\level}
   }
   \vspace{0.5cm}
@@ -129,7 +129,7 @@
   \raggedright
   \footnotesize
 
-  \DTLforeach{interests}{\interest=interest}{
+  \DTLforeach*{interests}{\interest=interest}{
     \dispInterest{\interest}
   }
 }
@@ -154,8 +154,12 @@
   \renewcommand{\dtlheaderformat}[1]{}
   \renewcommand{\arraystretch}{1.3}
   \begin{tabular}{#1}
-  \DTLforeach{skills}{\skill=skill,\level=level}{%
-  \skill & \level\\}
+  \DTLforeach*{skills}%
+    {\skill=skill,\level=level}%
+    {%
+      \DTLiffirstrow{}{\\}%
+      \skill & \level
+    }% end of loop
   \end{tabular}
 }
 %%%%%%%%%%%%%%%% 
@@ -218,7 +222,6 @@
 \setmainfont[Ligatures=TeX]{Roboto Light}
 
 
-
 %%%%%%%%%%%%%%%%%%%%%%%
 % (not quite)Sectioning
 %%%%%%%%%%%%%%%%%%%%%%%
@@ -259,10 +262,9 @@
 
 %%% TSCV stuff above
 
-
 %%% margins for geometry
 \newlength{\rightMargin}
-\setlength{\rightMargin}{7.3cm}
+\setlength{\rightMargin}{6.3cm}
 \newlength{\leftMargin}
 \setlength{\leftMargin}{1cm}
 
@@ -271,7 +273,7 @@
 \setlength{\sidebarOffset}{3cm}
 \newlength{\sidebarTopHeight}
 \setlength{\sidebarTopHeight}{6.7cm}
-\newcommand{\btbSidebar}{\begin{textblock}{4}[0,0](16.6,0)}
+\newcommand{\btbSidebar}{\begin{textblock}{4}[0,0](16,0)}
 \newcommand{\etbSidebar}{\end{textblock}}
 
 
@@ -314,8 +316,6 @@
   \vspace{0.25cm}
   \addfontfeatures{Color=darkgray}
 }
-
-
 
 \newcommand{\dosidebar}
 {
@@ -361,6 +361,8 @@
       \addfontfeatures{Color=sidecolor}
       \color{sidecolor}
 
+      \setmainfont[Ligatures=TeX,Color=sidecolor]{Roboto Medium}
+
       \ListContacts{}
 
       \ListEducation{}
@@ -379,11 +381,6 @@
 
 \pagestyle{empty}
 
-%%%%%%%%%%
-% Geometry
-%%%%%%%%%%
-\RequirePackage[right=\rightMargin,top=1.5cm,left=\leftMargin,bottom=1.5cm,nohead,nofoot,asymmetric,bindingoffset=0.1mm]{geometry}
-
 \AtBeginShipout{\dosidebar}
 \newcommand{\makeprofile}{
   \AtBeginShipoutFirst{\doprofile}
@@ -395,6 +392,7 @@
   }
 }
 
+\RequirePackage[right=\rightMargin,top=2ex,left=\leftMargin,bottom=0pt,nohead,nofoot,asymmetric,bindingoffset=0.1mm]{geometry}
 \RequirePackage{hyperref}
 \hypersetup{
   pdfencoding=unicode,
@@ -403,12 +401,3 @@
   citecolor={sidecolor},
   urlcolor={sidecolor}
 }
-
-
-
-%%%%%%%%%%%%%%%
-% Class Options
-%%%%%%%%%%%%%%%
-
-\DeclareOption{leftSidebar}{\leftSidebar{}}
-\ProcessOptions
