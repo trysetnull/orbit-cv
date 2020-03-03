@@ -148,7 +148,7 @@ seeds, as well as implementing the irrigation plan.
 \addSkill{Scaring Crows}{0.85}
 \addSkill{Gardening}{0.92}
 \addSkill{Standing Still}{0.99}
-\ListSkills{}
+\ListSkills{ll}
 #+END_SRC
 
 *** Color Schemes
